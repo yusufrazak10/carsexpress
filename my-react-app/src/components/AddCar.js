@@ -13,6 +13,9 @@ const AddCar = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // State for storing the list of cars
+  const [cars, setCars] = useState([]);
+
   // Handle input changes and update car state accordingly
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -31,6 +34,14 @@ const AddCar = () => {
         [name]: value
       }));
     }
+  };
+
+  // Reusable fetch method
+  const fetchCars = () => {
+    fetch('/cars')
+      .then(response => response.json())
+      .then(updatedCars => setCars(updatedCars))
+      .catch(() => setError('Failed to fetch updated car list.'));
   };
 
   // Handle form submission to add the car
@@ -54,8 +65,7 @@ const AddCar = () => {
       seats: car.seats,
     };
 
-    // Send the car data to the server
-    fetch('http://localhost:3000/cars', {
+    fetch('/cars', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -72,12 +82,14 @@ const AddCar = () => {
       .then(() => {
         // Show success message after successfully adding the car
         setSuccess('Car added successfully!');
+        // Call methd to fetch cars.
+        fetchCars(); 
       })
       .catch(() => {
         // Handle fetch failure or any other errors
         setError('Failed to add car. Please try again later.');
       });
-  };
+    }    
 
   return (
     <div>

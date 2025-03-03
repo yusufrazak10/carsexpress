@@ -12,7 +12,9 @@ const UpdateCar = () => {
   // State for handling errors
   const [error, setError] = useState('');
   // State for handling success messages after car update
-  const [success, setSuccess] = useState('');  
+  const [success, setSuccess] = useState(''); 
+  // State for storing the list of cars
+  const [cars, setCars] = useState([]); 
 
   // Update car state based on form input
   const handleInputChange = (event) => {
@@ -23,6 +25,14 @@ const UpdateCar = () => {
       ...prevCar,
       [name]: value === '' ? prevCar[name] : value
     }));
+  };
+
+  // Reusable fetch method
+  const fetchCars = () => {
+    fetch('/cars')
+      .then(response => response.json())
+      .then(updatedCars => setCars(updatedCars))
+      .catch(() => setError('Failed to fetch updated car list.'));
   };
 
   // Handle form submission to update the car information
@@ -62,7 +72,7 @@ const UpdateCar = () => {
     };
 
     // Send the PUT request to update the car information
-    fetch(`http://localhost:8080/cars/${car.id}`, requestOptions)
+    fetch(`/cars/${car.id}`, requestOptions)  
       .then(response => {
         // If the response is not ok, throw an error
         if (!response.ok) {
@@ -73,6 +83,8 @@ const UpdateCar = () => {
       .then(() => {
         // Set success message after car update is successful
         setSuccess('Car updated successfully!');
+        // Call methd to fetch cars.
+        fetchCars(); 
       })
       .catch(error => {
         // Handle any errors that occur during the update request

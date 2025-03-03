@@ -9,6 +9,9 @@ const DeleteCar = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // State for storing the list of cars
+  const [cars, setCars] = useState([]);
+
   // Function to handle input changes and update the car state
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -16,6 +19,14 @@ const DeleteCar = () => {
       ...prevCar,
       [name]: value,
     }));
+  };
+
+  // Reusable fetch method
+  const fetchCars = () => {
+    fetch('/cars')
+      .then(response => response.json())
+      .then(updatedCars => setCars(updatedCars))
+      .catch(() => setError('Failed to fetch updated car list.'));
   };
 
   // Function to handle car deletion when the form is submitted
@@ -41,7 +52,7 @@ const DeleteCar = () => {
     };
 
     // Perform the DELETE request to the API
-    fetch(`http://localhost:8080/cars/${car.id}`, requestOptions)
+    fetch(`/cars/${car.id}`, requestOptions)  
       .then((response) => {
         // If the response is not ok, throw an error with the message from the response
         if (!response.ok) {
@@ -55,6 +66,8 @@ const DeleteCar = () => {
       .then((data) => {
         // Set success message after successful deletion
         setSuccess('Car deleted successfully.');
+        // Call methd to fetch cars.
+        fetchCars(); 
       })
       .catch((error) => {
         // If there's an error, set the error message

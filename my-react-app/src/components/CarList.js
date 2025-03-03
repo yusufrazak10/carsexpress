@@ -10,7 +10,7 @@ const CarList = () => {
   // useEffect hook to fetch car data when the component mounts
   useEffect(() => {
     // Fetch car data from the API
-    fetch('http://localhost:8080/api') 
+    fetch('/api') 
       .then((response) => {
         // If the response is not ok, throw an error
         if (!response.ok) {
